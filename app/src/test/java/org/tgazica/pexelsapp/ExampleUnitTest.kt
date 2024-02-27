@@ -1,4 +1,4 @@
-package org.tgazica.pexelapp
+package org.tgazica.pexelsapp
 
 import org.junit.Test
 

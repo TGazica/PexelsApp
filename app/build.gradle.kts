@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -6,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "org.tgazica.pexelapp"
+    namespace = "org.tgazica.pexelsapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "org.tgazica.pexelapp"
+        applicationId = "org.tgazica.pexelsapp"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
@@ -24,8 +26,18 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        debug {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        defaultConfig {
+            val pexelsApiKey = gradleLocalProperties(rootDir).getProperty("pexelsApiKey")
+            buildConfigField("String", "pexelsApiKey", pexelsApiKey)
         }
     }
     compileOptions {
@@ -33,13 +45,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.composeCompilerVersion.get()
     }
     packaging {
         resources {
@@ -49,13 +62,17 @@ android {
 }
 
 dependencies {
+    // KOTLIN
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
 
+    // ANDROID
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    // UI
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -64,13 +81,26 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
     implementation(libs.androidx.compose.viewmodel)
 
+    implementation(libs.coil)
+
+    // DI
+    implementation(libs.koin)
+    implementation(libs.koin.logger.slf4j)
+
+    // NETWORKING
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.contentNegotiation)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging)
+
+    // DB
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.coroutines)
 
-    implementation(libs.coil)
-
+    // TEST
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

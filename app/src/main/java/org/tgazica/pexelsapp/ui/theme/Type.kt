@@ -1,4 +1,4 @@
-package org.tgazica.pexelapp.ui.theme
+package org.tgazica.pexelsapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

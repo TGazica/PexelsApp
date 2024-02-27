@@ -1,4 +1,4 @@
-package org.tgazica.pexelapp.ui.theme
+package org.tgazica.pexelsapp.ui.theme
 
 import android.app.Activity
 import android.os.Build

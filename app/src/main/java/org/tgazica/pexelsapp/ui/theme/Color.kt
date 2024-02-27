@@ -1,4 +1,4 @@
-package org.tgazica.pexelapp.ui.theme
+package org.tgazica.pexelsapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
