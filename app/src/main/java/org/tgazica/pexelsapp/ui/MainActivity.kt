@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.tgazica.pexelsapp.ui.imagelist.ImageList
 import org.tgazica.pexelsapp.ui.imagelist.ImageListViewModel
-import org.tgazica.pexelsapp.ui.theme.PexelAppTheme
+import org.tgazica.pexelsapp.ui.theme.PexelsAppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -21,11 +21,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PexelAppTheme {
+            PexelsAppTheme {
                 val uiState by viewModel.images.collectAsState()
 
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    ImageList(uiState = uiState)
+                    ImageList(
+                        uiState = uiState,
+                        onAction = {}
+                    )
                 }
             }
         }

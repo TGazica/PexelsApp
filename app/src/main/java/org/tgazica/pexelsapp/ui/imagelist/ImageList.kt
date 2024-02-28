@@ -1,45 +1,50 @@
 package org.tgazica.pexelsapp.ui.imagelist
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import org.tgazica.pexelsapp.ui.imagelist.model.ImageListAction
+import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 
 @Composable
 fun ImageList(
-    uiState: ImageListUiState
+    uiState: ImageListUiState,
+    onAction: (ImageListAction) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(2),
+        verticalItemSpacing = 8.dp,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(8.dp)
     ) {
         items(
             items = uiState.images,
-            key = { it },
-        ) { imageUrl ->
-            val painter = rememberAsyncImagePainter(model = imageUrl)
-
-            Image(
+            key = { it.imageUrl },
+        ) { image ->
+            ImageItem(
+                uiState = image,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop,
-                painter = painter,
-                contentDescription = ""
+                    .aspectRatio(image.aspectRatio)
+                    .shadow(elevation = 8.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .clickable {
+                        onAction(ImageListAction.ImageClick(image))
+                    }
             )
         }
     }
 }
-
-@Stable
-data class ImageListUiState(
-    val images: List<String>
-)

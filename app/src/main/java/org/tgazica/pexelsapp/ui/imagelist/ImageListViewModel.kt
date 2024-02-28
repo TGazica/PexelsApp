@@ -8,19 +8,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.tgazica.pexelsapp.data.remote.ImagesService
+import org.tgazica.pexelsapp.data.remote.model.ApiImage
+import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
+import org.tgazica.pexelsapp.ui.imagelist.model.toImageUiState
 
 class ImageListViewModel(
-    val imagesService: ImagesService
+    private val imagesService: ImagesService
 ) : ViewModel() {
 
-    val backgroundScope = viewModelScope + Dispatchers.IO
+    private val backgroundScope = viewModelScope + Dispatchers.IO
 
     val images = MutableStateFlow(ImageListUiState(emptyList()))
 
     init {
         backgroundScope.launch {
             val apiImages = imagesService.getImages()
-            images.update { ImageListUiState(apiImages.map { it.src.medium }) }
+            images.update { ImageListUiState(apiImages.map { it.toImageUiState() }) }
         }
     }
 }
