@@ -85,7 +85,6 @@ dependencies {
 
     // DI
     implementation(libs.koin)
-    implementation(libs.koin.logger.slf4j)
 
     // NETWORKING
     implementation(libs.ktor.client.core)
@@ -93,6 +92,8 @@ dependencies {
     implementation(libs.ktor.client.contentNegotiation)
     implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.client.logging)
+
+    implementation(libs.slf4j)
 
     // DB
     annotationProcessor(libs.androidx.room.compiler)

@@ -1,12 +1,15 @@
 package org.tgazica.pexelsapp.data.remote.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class ApiResponse(
-    val page: Int,
-    @SerialName("per_page")
-    val perPage: Int,
-    val photos: List<ApiImage>,
+data class ApiResponse<T>(
+    @JsonNames("photos")
+    val data: List<T>,
+    @JsonNames("next_page")
+    val nextPage: String?
 )

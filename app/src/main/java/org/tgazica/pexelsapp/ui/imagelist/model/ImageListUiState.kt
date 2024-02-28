@@ -4,5 +4,6 @@ import androidx.compose.runtime.Stable
 
 @Stable
 data class ImageListUiState(
-    val images: List<ImageUiState>
+    val images: List<ImageUiState> = emptyList(),
+    val isLoading: Boolean = false
 )

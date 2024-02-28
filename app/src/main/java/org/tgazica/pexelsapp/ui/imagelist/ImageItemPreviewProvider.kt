@@ -11,8 +11,7 @@ internal object ImageItemMockData {
 
     private val imageItem = ImageUiState(
         imageUrl = "https://www.pexels.com/photo/woman-in-white-long-sleeved-top-and-skirt-standing-on-field-2880507/",
-        width = 4000,
-        height = 6000,
+        aspectRatio = 1.5f,
         thumbnailUrl = "https://images.pexels.com/photos/2880507/pexels-photo-2880507.jpeg?auto=compress&cs=tinysrgb&h=350",
         author = "Some Author"
     )
