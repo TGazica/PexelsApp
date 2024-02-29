@@ -20,7 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -55,16 +55,16 @@ fun ImageListScreen(
 ) {
     val listState = rememberLazyStaggeredGridState()
     val refreshState = rememberPullToRefreshState()
-    val lastScrollOffset = remember { mutableStateOf(0f) }
+    val lastScrollOffset = remember { mutableFloatStateOf(0f) }
     val isFabVisible by remember {
         derivedStateOf {
-            lastScrollOffset.value > 0f && listState.canScrollBackward
+            lastScrollOffset.floatValue > 0f && listState.canScrollBackward
         }
     }
     val nestedScroll = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                lastScrollOffset.value = available.y
+                lastScrollOffset.floatValue = available.y
                 return super.onPreScroll(available, source)
             }
         }
