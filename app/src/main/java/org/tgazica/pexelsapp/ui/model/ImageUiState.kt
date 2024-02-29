@@ -7,7 +7,8 @@ data class ImageUiState(
     val imageUrl: String = "",
     val thumbnailUrl: String = "",
     val author: String = "",
-    val aspectRatio: Float = 0f
+    val aspectRatio: Float = 1f,
+    val imageDescription: String = ""
 )
 
 fun ApiImage.toImageUiState() = ImageUiState(
@@ -15,5 +16,6 @@ fun ApiImage.toImageUiState() = ImageUiState(
     imageUrl = src.original,
     thumbnailUrl = src.medium,
     author = photographer,
-    aspectRatio = width.toFloat() / height
+    aspectRatio = width.toFloat() / height,
+    imageDescription = alt
 )

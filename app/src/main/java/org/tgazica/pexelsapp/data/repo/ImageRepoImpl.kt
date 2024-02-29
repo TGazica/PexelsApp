@@ -32,7 +32,6 @@ class ImageRepoImpl(
     }
 
     override suspend fun getImageById(imageId: Int): ApiImage {
-        println("find image with id: $imageId")
         return imagesCache.value.first { it.id == imageId }
     }
 

@@ -1,4 +1,4 @@
-package org.tgazica.pexelsapp.ui.fullscreen
+package org.tgazica.pexelsapp.ui.imagedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,38 +15,20 @@ import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 import org.tgazica.pexelsapp.ui.model.toImageUiState
 
-class FullscreenImageViewModel(
+class ImageDetailsViewModel(
     private val imageId: Int,
     private val imageRepo: ImageRepo
 ): ViewModel() {
 
     private val backgroundScope = viewModelScope + Dispatchers.IO
 
-    private val image: MutableStateFlow<ImageUiState> = MutableStateFlow(ImageUiState(id = imageId))
-    private val isOverlayVisible: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
-    val uiState: StateFlow<FullscreenImageUiState> = combine(
-        image,
-        isOverlayVisible
-    ) { image, isOverlayVisible ->
-        FullscreenImageUiState(
-            imageUiState = image,
-            isOverlayVisible = isOverlayVisible,
-        )
-    }.stateIn(
-        scope = backgroundScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = FullscreenImageUiState()
-    )
+    private val _uiState: MutableStateFlow<ImageUiState> = MutableStateFlow(ImageUiState(id = imageId))
+    val uiState: StateFlow<ImageUiState> = _uiState
 
     init {
         backgroundScope.launch {
             val image = imageRepo.getImageById(imageId)
-            this@FullscreenImageViewModel.image.update { image.toImageUiState() }
+            _uiState.update { image.toImageUiState() }
         }
-    }
-
-    fun onImageTap() {
-        isOverlayVisible.update { !it }
     }
 }

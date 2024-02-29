@@ -14,7 +14,8 @@ data class ApiImage(
     val src: ApiImageSrc,
     val photographer: String,
     @JsonNames("avg_color")
-    val avgColor: String
+    val avgColor: String,
+    val alt: String
 )
 
 @Serializable

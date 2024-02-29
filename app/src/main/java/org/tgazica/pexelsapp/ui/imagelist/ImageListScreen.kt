@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.tgazica.pexelsapp.R
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 import org.tgazica.pexelsapp.ui.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
 
 @Composable
 fun ImageListScreen(
@@ -79,6 +80,12 @@ fun ImageListScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(nestedScroll),
+        topBar = {
+            PexelsTopBar(
+                title = "Pexels curated photos",
+                iconRes = R.drawable.ic_close
+            )
+        },
         floatingActionButton = {
             AnimatedVisibility(
                 enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
