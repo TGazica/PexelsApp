@@ -84,7 +84,9 @@ dependencies {
     implementation(libs.coil)
 
     // DI
-    implementation(libs.koin)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.navigation)
 
     // NETWORKING
     implementation(libs.ktor.client.core)

@@ -2,6 +2,7 @@ package org.tgazica.pexelsapp.data.repo
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -28,6 +29,11 @@ class ImageRepoImpl(
 
     override suspend fun observeImages(): Flow<Result<List<ApiImage>>> = resultImages.onStart {
         if (resultImages.value.dataOrNull().isNullOrEmpty()) loadNextPage()
+    }
+
+    override suspend fun getImageById(imageId: Int): ApiImage {
+        println("find image with id: $imageId")
+        return imagesCache.value.first { it.id == imageId }
     }
 
     override suspend fun loadNextPage() {

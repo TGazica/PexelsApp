@@ -59,7 +59,10 @@ androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 # DI
-koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koin" }
+
 
 # NETWORKING
 ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }

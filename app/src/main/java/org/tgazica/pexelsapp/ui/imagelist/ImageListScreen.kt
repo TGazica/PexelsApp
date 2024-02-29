@@ -31,19 +31,23 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import org.tgazica.pexelsapp.R
-import org.tgazica.pexelsapp.ui.imagelist.model.ImageListAction
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
+import org.tgazica.pexelsapp.ui.model.ImageUiState
 
 @Composable
 fun ImageListScreen(
-    viewModel: ImageListViewModel
+    viewModel: ImageViewModel = koinViewModel(),
+    onImageClicked: (ImageUiState) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     ImageListScreen(
         uiState = uiState,
-        onAction = viewModel::onAction
+        loadNextPage = viewModel::loadNextPage,
+        refreshImages = viewModel::refreshImages,
+        onImageClicked = onImageClicked
     )
 }
 
@@ -51,7 +55,9 @@ fun ImageListScreen(
 @Composable
 fun ImageListScreen(
     uiState: ImageListUiState,
-    onAction: (ImageListAction) -> Unit
+    onImageClicked: (ImageUiState) -> Unit,
+    loadNextPage: () -> Unit,
+    refreshImages: () -> Unit
 ) {
     val listState = rememberLazyStaggeredGridState()
     val refreshState = rememberPullToRefreshState()
@@ -103,7 +109,8 @@ fun ImageListScreen(
             ImageList(
                 uiState = uiState,
                 scrollState = listState,
-                onAction = onAction
+                onImageClicked = onImageClicked,
+                loadNextPage = loadNextPage,
             )
 
             PullToRefreshContainer(
@@ -122,7 +129,7 @@ fun ImageListScreen(
 
         LaunchedEffect(key1 = refreshState.isRefreshing) {
             if (!uiState.isLoading && refreshState.isRefreshing) {
-                onAction(ImageListAction.RefreshImages)
+                refreshImages()
             }
         }
     }

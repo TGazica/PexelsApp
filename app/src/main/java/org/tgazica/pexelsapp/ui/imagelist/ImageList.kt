@@ -15,14 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import org.tgazica.pexelsapp.ui.imagelist.model.ImageListAction
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
+import org.tgazica.pexelsapp.ui.model.ImageUiState
 
 @Composable
 fun ImageList(
     uiState: ImageListUiState,
     scrollState: LazyStaggeredGridState,
-    onAction: (ImageListAction) -> Unit
+    onImageClicked: (ImageUiState) -> Unit,
+    loadNextPage: () -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
@@ -45,13 +46,11 @@ fun ImageList(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clip(shape = RoundedCornerShape(8.dp))
-                    .clickable {
-                        onAction(ImageListAction.ImageClick(image))
-                    }
+                    .clickable { onImageClicked(image) }
             )
 
             if (!uiState.isLoading && index >= uiState.images.size - 5) {
-                onAction(ImageListAction.LoadNextPage)
+                loadNextPage()
             }
         }
     }

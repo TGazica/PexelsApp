@@ -6,6 +6,7 @@ import org.tgazica.pexelsapp.data.model.Result
 
 interface ImageRepo {
     suspend fun observeImages(): Flow<Result<List<ApiImage>>>
+    suspend fun getImageById(imageId: Int): ApiImage
     suspend fun loadNextPage()
     suspend fun refreshImages()
 }

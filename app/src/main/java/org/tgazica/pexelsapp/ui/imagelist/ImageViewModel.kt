@@ -16,14 +16,12 @@ import org.tgazica.pexelsapp.data.model.isLoading
 import org.tgazica.pexelsapp.data.model.onError
 import org.tgazica.pexelsapp.data.model.onSuccess
 import org.tgazica.pexelsapp.data.repo.ImageRepo
-import org.tgazica.pexelsapp.ui.imagelist.model.ImageListAction
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
-import org.tgazica.pexelsapp.ui.imagelist.model.ImageUiState
-import org.tgazica.pexelsapp.ui.imagelist.model.toImageUiState
-import java.lang.Exception
+import org.tgazica.pexelsapp.ui.model.ImageUiState
+import org.tgazica.pexelsapp.ui.model.toImageUiState
 
-class ImageListViewModel(
-    private val imageRepo: ImageRepo
+class ImageViewModel(
+    private val imageRepo: ImageRepo,
 ) : ViewModel() {
 
     private val backgroundScope = viewModelScope + Dispatchers.IO
@@ -58,24 +56,13 @@ class ImageListViewModel(
         }
     }
 
-    fun onAction(action: ImageListAction) {
-        when (action) {
-            is ImageListAction.ImageClick -> {
-                // open image
-            }
-
-            ImageListAction.LoadNextPage -> loadNextPage()
-            ImageListAction.RefreshImages -> refreshImages()
-        }
-    }
-
-    private fun loadNextPage() {
+    fun loadNextPage() {
         backgroundScope.launch {
             imageRepo.loadNextPage()
         }
     }
 
-    private fun refreshImages() {
+    fun refreshImages() {
         backgroundScope.launch {
             imageRepo.refreshImages()
         }
