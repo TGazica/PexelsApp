@@ -53,7 +53,7 @@ class ImageRepoImpl(
 
         currentPage.set(1)
 
-        val apiImages = imageService.getImages(1, true)
+        val apiImages = imageService.getImages(1)
         val images = imagesCache.updateAndGet { apiImages.data }
         resultImages.update { Result.Success(images) }
     }

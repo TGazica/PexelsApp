@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
@@ -20,6 +21,7 @@ import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 @Composable
 fun ImageList(
     uiState: ImageListUiState,
+    scrollState: LazyStaggeredGridState,
     onAction: (ImageListAction) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
@@ -27,6 +29,7 @@ fun ImageList(
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp),
+        state = scrollState
     ) {
         itemsIndexed(
             items = uiState.images,

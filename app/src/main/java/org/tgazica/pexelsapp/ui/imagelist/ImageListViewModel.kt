@@ -66,9 +66,6 @@ class ImageListViewModel(
 
             ImageListAction.LoadNextPage -> loadNextPage()
             ImageListAction.RefreshImages -> refreshImages()
-            ImageListAction.ScrollToTop -> {
-                // scroll to top
-            }
         }
     }
 
