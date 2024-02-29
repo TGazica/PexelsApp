@@ -47,15 +47,17 @@ fun ImageListScreen(
         )
     }
 
-    LaunchedEffect(key1 = uiState.isLoading) {
+    LaunchedEffect(key1 = uiState) {
         if (uiState.isLoading && !refreshState.isRefreshing) {
             refreshState.startRefresh()
-        } else {
+        } else if (!uiState.isLoading && refreshState.isRefreshing) {
             refreshState.endRefresh()
         }
     }
 
     LaunchedEffect(key1 = refreshState.isRefreshing) {
-        if (!uiState.isLoading && refreshState.isRefreshing) onAction(ImageListAction.RefreshImages)
+        if (!uiState.isLoading && refreshState.isRefreshing) {
+            onAction(ImageListAction.RefreshImages)
+        }
     }
 }

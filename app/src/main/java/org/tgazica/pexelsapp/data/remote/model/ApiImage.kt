@@ -1,8 +1,10 @@
 package org.tgazica.pexelsapp.data.remote.model
 
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class ApiImage(
     val id: Int,
@@ -11,7 +13,7 @@ data class ApiImage(
     val url: String,
     val src: ApiImageSrc,
     val photographer: String,
-    @SerialName("avg_color")
+    @JsonNames("avg_color")
     val avgColor: String
 )
 

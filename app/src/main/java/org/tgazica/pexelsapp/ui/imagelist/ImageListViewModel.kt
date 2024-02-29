@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import org.tgazica.pexelsapp.data.model.isLoading
+import org.tgazica.pexelsapp.data.model.onError
+import org.tgazica.pexelsapp.data.model.onSuccess
 import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListAction
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
@@ -44,8 +47,13 @@ class ImageListViewModel(
 
     init {
         backgroundScope.launch {
-            imageRepo.observeImages().collectLatest { apiImages ->
-                images.update { apiImages.map { it.toImageUiState() } }
+            imageRepo.observeImages().collectLatest { result ->
+                isLoading.update { result.isLoading() }
+                result.onSuccess { imagesResult ->
+                    images.update { imagesResult.map { it.toImageUiState() } }
+                }.onError {
+                    // TODO show error to the user
+                }
             }
         }
     }
@@ -66,29 +74,13 @@ class ImageListViewModel(
 
     private fun loadNextPage() {
         backgroundScope.launch {
-            try {
-                isLoading.update { true }
-                imageRepo.loadNextPage()
-            }catch (e: Exception) {
-                // TODO notify user of error
-                e.printStackTrace()
-            }finally {
-                isLoading.update { false }
-            }
+            imageRepo.loadNextPage()
         }
     }
 
     private fun refreshImages() {
         backgroundScope.launch {
-            try {
-                isLoading.update { true }
-                imageRepo.refreshImages()
-            }catch (e: Exception) {
-                // TODO notify user of error
-                e.printStackTrace()
-            }finally {
-                isLoading.update { false }
-            }
+            imageRepo.refreshImages()
         }
     }
 

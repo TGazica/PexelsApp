@@ -1,7 +1,6 @@
 package org.tgazica.pexelsapp.data.remote.model
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 

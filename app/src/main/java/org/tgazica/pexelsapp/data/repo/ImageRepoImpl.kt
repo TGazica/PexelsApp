@@ -2,31 +2,37 @@ package org.tgazica.pexelsapp.data.repo
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import org.tgazica.pexelsapp.data.remote.ImageService
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import org.tgazica.pexelsapp.data.model.Result
+import org.tgazica.pexelsapp.data.model.dataOrNull
+import org.tgazica.pexelsapp.data.model.isLoading
+import org.tgazica.pexelsapp.data.cache.AppCacheStorage
 
 class ImageRepoImpl(
-    private val imageService: ImageService
-): ImageRepo {
+    private val imageService: ImageService,
+    private val cache: AppCacheStorage
+) : ImageRepo {
 
-    private val images: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
+    private val imagesCache: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
+    private val resultImages: MutableStateFlow<Result<List<ApiImage>>> =
+        MutableStateFlow(Result.Success(emptyList()))
 
     private val hasReachedEnd: AtomicBoolean = AtomicBoolean(false)
     private val currentPage: AtomicInteger = AtomicInteger(0)
-    private val isLoading: AtomicBoolean = AtomicBoolean(false)
 
-    override suspend fun observeImages(): Flow<List<ApiImage>> = images.onStart {
-        if (images.value.isEmpty()) loadNextPage()
+    override suspend fun observeImages(): Flow<Result<List<ApiImage>>> = resultImages.onStart {
+        if (resultImages.value.dataOrNull().isNullOrEmpty()) loadNextPage()
     }
 
     override suspend fun loadNextPage() {
-        if (isLoading.get() || hasReachedEnd.get()) return
-        isLoading.set(true)
+        if (resultImages.value.isLoading() || hasReachedEnd.get()) return
+        resultImages.update { Result.Loading() }
 
         val page = currentPage.incrementAndGet()
         val imagesResponse = imageService.getImages(page)
@@ -35,19 +41,20 @@ class ImageRepoImpl(
 
         val apiImages = imagesResponse.data
 
-        if (apiImages.isNotEmpty()) images.update { (it + apiImages).distinctBy { it.id } }
-
-        isLoading.set(false)
+        val images = imagesCache.updateAndGet { (it + apiImages).distinctBy { it.id } }
+        resultImages.update { Result.Success(images) }
     }
 
     override suspend fun refreshImages() {
-        if (isLoading.get()) return
-        isLoading.set(true)
+        if (resultImages.value.isLoading()) return
+        resultImages.update { Result.Loading() }
+
+        cache.clearCache()
 
         currentPage.set(1)
-        val apiImages = imageService.getImages(1)
-        images.update { apiImages.data }
 
-        isLoading.set(false)
+        val apiImages = imageService.getImages(1, true)
+        val images = imagesCache.updateAndGet { apiImages.data }
+        resultImages.update { Result.Success(images) }
     }
 }
