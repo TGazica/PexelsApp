@@ -10,6 +10,7 @@ import org.tgazica.pexelsapp.data.cache.LocalCache
 import org.tgazica.pexelsapp.data.remote.createHttpClient
 import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.data.repo.ImageRepoImpl
+import org.tgazica.pexelsapp.util.NetworkConnectionListener
 
 val dataModule = module {
     singleOf(::createHttpClient)
@@ -19,4 +20,6 @@ val dataModule = module {
 
     singleOf(::LocalCache)
     single<AppCacheStorage> { AppCacheStorage(directory = get()) }
+
+    singleOf(::NetworkConnectionListener)
 }

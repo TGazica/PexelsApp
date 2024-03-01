@@ -2,19 +2,21 @@ package org.tgazica.pexelsapp.ui.imagelist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import org.tgazica.pexelsapp.data.model.isLoading
-import org.tgazica.pexelsapp.data.model.onError
-import org.tgazica.pexelsapp.data.model.onSuccess
 import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 import org.tgazica.pexelsapp.ui.model.ImageUiState
@@ -24,37 +26,37 @@ class ImageViewModel(
     private val imageRepo: ImageRepo,
 ) : ViewModel() {
 
-    private val backgroundScope = viewModelScope + Dispatchers.IO
+    private val error: MutableStateFlow<Throwable?> = MutableStateFlow(null)
 
-    private val images = MutableStateFlow(emptyList<ImageUiState>())
-    private val isLoading = MutableStateFlow(false)
+    private val backgroundScope =
+        viewModelScope + Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
+            error.update { throwable }
+        }
+
+    private val images: StateFlow<List<ImageUiState>> = observeData(emptyList()) {
+        imageRepo.observeImages().mapLatest { it.map { it.toImageUiState() } }
+    }
+    private val isLoading = observeData(false) {
+        imageRepo.observeLoadingState()
+    }
 
     val uiState: StateFlow<ImageListUiState> = combine(
         images,
-        isLoading
-    ) { images, isLoading ->
+        isLoading,
+        error
+    ) { images, isLoading, error ->
         ImageListUiState(
             images = images,
             isLoading = isLoading,
+            error = error
         )
+    }.onStart {
+        if (images.value.isEmpty()) loadNextPage()
     }.stateIn(
         scope = backgroundScope,
         started = SharingStarted.WhileSubscribed(STATE_DURATION_MILLIS),
         initialValue = ImageListUiState()
     )
-
-    init {
-        backgroundScope.launch {
-            imageRepo.observeImages().collectLatest { result ->
-                isLoading.update { result.isLoading() }
-                result.onSuccess { imagesResult ->
-                    images.update { imagesResult.map { it.toImageUiState() } }
-                }.onError {
-                    // TODO show error to the user
-                }
-            }
-        }
-    }
 
     fun loadNextPage() {
         backgroundScope.launch {
@@ -67,6 +69,17 @@ class ImageViewModel(
             imageRepo.refreshImages()
         }
     }
+
+    private fun <T> observeData(
+        initialValue: T,
+        source: suspend () -> Flow<T>,
+    ): StateFlow<T> = flow {
+        emitAll(source())
+    }.stateIn(
+        scope = backgroundScope,
+        started = SharingStarted.WhileSubscribed(STATE_DURATION_MILLIS),
+        initialValue = initialValue
+    )
 
     companion object {
         private const val STATE_DURATION_MILLIS: Long = 5000

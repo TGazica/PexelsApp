@@ -13,6 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -60,6 +62,7 @@ fun ImageListScreen(
     loadNextPage: () -> Unit,
     refreshImages: () -> Unit
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyStaggeredGridState()
     val refreshState = rememberPullToRefreshState()
     val lastScrollOffset = remember { mutableFloatStateOf(0f) }
@@ -106,6 +109,9 @@ fun ImageListScreen(
                     )
                 }
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) {
         Box(
@@ -137,6 +143,15 @@ fun ImageListScreen(
         LaunchedEffect(key1 = refreshState.isRefreshing) {
             if (!uiState.isLoading && refreshState.isRefreshing) {
                 refreshImages()
+                refreshState.endRefresh()
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.error) {
+        uiState.error?.message?.let { error ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message = error)
             }
         }
     }

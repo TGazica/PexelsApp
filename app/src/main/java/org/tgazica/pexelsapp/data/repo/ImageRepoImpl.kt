@@ -2,72 +2,82 @@ package org.tgazica.pexelsapp.data.repo
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import org.tgazica.pexelsapp.data.remote.ImageService
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import org.tgazica.pexelsapp.data.model.Result
-import org.tgazica.pexelsapp.data.model.dataOrNull
-import org.tgazica.pexelsapp.data.model.isLoading
 import org.tgazica.pexelsapp.data.cache.AppCacheStorage
+import org.tgazica.pexelsapp.util.NetworkConnectionListener
+import org.tgazica.pexelsapp.util.NoInternetException
 
 class ImageRepoImpl(
     private val imageService: ImageService,
-    private val cache: AppCacheStorage
+    private val cache: AppCacheStorage,
+    networkConnectionListener: NetworkConnectionListener
 ) : ImageRepo {
 
     private val imagesCache: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
-    private val resultImages: MutableStateFlow<Result<List<ApiImage>>> =
-        MutableStateFlow(Result.Success(imagesCache.value))
+    private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val hasInternet = networkConnectionListener.isNetworkAvailable
 
     private val hasReachedEnd: AtomicBoolean = AtomicBoolean(false)
     private val currentPage: AtomicInteger = AtomicInteger(0)
+    private val hasReachedCacheEnd: AtomicBoolean = AtomicBoolean(false)
 
-    override suspend fun observeImages(): Flow<Result<List<ApiImage>>> = resultImages.onStart {
-        if (resultImages.value.dataOrNull().isNullOrEmpty()) loadNextPage()
-    }
+    override suspend fun observeImages(): Flow<List<ApiImage>> = hasInternet.onEach { hasInternet ->
+        if (imagesCache.value.isEmpty() && hasInternet) loadNextPage()
+    }.flatMapLatest { imagesCache }
+
+    override suspend fun observeLoadingState(): Flow<Boolean> = isLoading
 
     override suspend fun getImageById(imageId: Int): ApiImage {
         return imagesCache.value.first { it.id == imageId }
     }
 
     override suspend fun loadNextPage() {
-        try {
-            if (resultImages.value.isLoading() || hasReachedEnd.get()) return
-            resultImages.update { Result.Loading() }
-
+        queryData {
             val page = currentPage.incrementAndGet()
             val imagesResponse = imageService.getImages(page)
-
             hasReachedEnd.set(imagesResponse.nextPage == null)
-
             val apiImages = imagesResponse.data
-
-            val images = imagesCache.updateAndGet { (it + apiImages).distinctBy { it.id } }
-            resultImages.update { Result.Success(images) }
-        } catch (e: Exception) {
-            resultImages.update { Result.Error(e) }
+            imagesCache.update { (it + apiImages).distinctBy { it.id } }
         }
     }
 
     override suspend fun refreshImages() {
-        try {
-            if (resultImages.value.isLoading()) return
-            resultImages.update { Result.Loading() }
-
+        queryData(cancelWithoutConnection = true) {
             cache.clearCache()
-
             currentPage.set(1)
-
             val apiImages = imageService.getImages(1)
-            val images = imagesCache.updateAndGet { apiImages.data }
-            resultImages.update { Result.Success(images) }
-        } catch (e: Exception) {
-            resultImages.update { Result.Error(e) }
+            imagesCache.update { apiImages.data }
+        }
+    }
+
+    private suspend fun queryData(
+        cancelWithoutConnection: Boolean = false,
+        block: suspend () -> Unit
+    ) {
+        if (hasReachedCacheEnd.get()
+            && (!hasInternet.value && cancelWithoutConnection)
+        ) throw NoInternetException()
+
+        if (isLoading.value) return
+        isLoading.update { true }
+        try {
+            block()
+            hasReachedCacheEnd.set(false)
+        } catch (exception: Exception) {
+            throw if (!hasInternet.value) {
+                hasReachedCacheEnd.set(true)
+                NoInternetException()
+            } else {
+                exception
+            }
+        } finally {
+            isLoading.update { false }
         }
     }
 }
