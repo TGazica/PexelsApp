@@ -45,33 +45,21 @@ fun Navigator() {
 /**
  * Interface for all of the destinations in the app.
  */
-sealed interface NavDestination {
-    /**
-     * The string used to identify each of the navigation destinations.
-     */
-    val destination: String
-}
+sealed interface NavDestination
 
 /**
  * Class that is used to navigate to the images list screen.
  */
-data class ImageList(override val destination: String = DESTINATION) : NavDestination {
-    companion object {
-        const val DESTINATION = "list"
-    }
+data object ImageList : NavDestination {
+    const val DESTINATION = "list"
 }
 
 /**
  * Class that is used to navigate to the images details screen.
  */
-data class ImageDetails(
-    val imageId: Int,
-    override val destination: String = navigateTo(imageId = imageId),
-) : NavDestination {
-    companion object {
-        const val IMAGE_ID = "imageId"
-        const val DESTINATION = "details/{$IMAGE_ID}"
+data object ImageDetails : NavDestination {
+    const val IMAGE_ID = "imageId"
+    const val DESTINATION = "details/{$IMAGE_ID}"
 
-        fun navigateTo(imageId: Int) = "details/$imageId"
-    }
+    fun navigateTo(imageId: Int) = "details/$imageId"
 }
