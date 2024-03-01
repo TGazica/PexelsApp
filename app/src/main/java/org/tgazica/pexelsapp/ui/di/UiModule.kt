@@ -14,7 +14,7 @@ val uiModule = module {
     viewModel { parameters ->
         ImageDetailsViewModel(
             imageId = parameters.get(),
-            imageRepo = get()
+            imageRepo = get(),
         )
     }
 }

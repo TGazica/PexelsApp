@@ -9,8 +9,8 @@ import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import org.tgazica.pexelsapp.data.remote.model.ApiResponse
 
 internal class ImageServiceImpl(
-    private val httpClient: HttpClient
-): ImageService {
+    private val httpClient: HttpClient,
+) : ImageService {
 
     override suspend fun getImages(page: Int): ApiResponse<ApiImage> {
         return httpClient.get("$baseUrl/curated") {
@@ -25,5 +25,4 @@ internal class ImageServiceImpl(
 
         private const val PAGE_SIZE = 20
     }
-
 }

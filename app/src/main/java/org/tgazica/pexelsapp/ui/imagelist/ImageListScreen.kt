@@ -41,14 +41,14 @@ import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
 
 /**
  * Stateful implementation of the image list.
- * 
+ *
  * @param viewModel [ImageListViewModel] that contains presentation logic for the image list screen.
  * @param onImageClicked Notifies when the user clicks on an image.
  */
 @Composable
 fun ImageListScreen(
     viewModel: ImageListViewModel = koinViewModel(),
-    onImageClicked: (ImageUiState) -> Unit
+    onImageClicked: (ImageUiState) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -56,7 +56,7 @@ fun ImageListScreen(
         uiState = uiState,
         loadNextPage = viewModel::loadNextPage,
         refreshImages = viewModel::refreshImages,
-        onImageClicked = onImageClicked
+        onImageClicked = onImageClicked,
     )
 }
 
@@ -74,7 +74,7 @@ fun ImageListScreen(
     uiState: ImageListUiState,
     onImageClicked: (ImageUiState) -> Unit,
     loadNextPage: () -> Unit,
-    refreshImages: () -> Unit
+    refreshImages: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyStaggeredGridState()
@@ -100,14 +100,14 @@ fun ImageListScreen(
         topBar = {
             PexelsTopBar(
                 title = "Pexels curated photos",
-                iconRes = R.drawable.ic_close
+                iconRes = R.drawable.ic_close,
             )
         },
         floatingActionButton = {
             AnimatedVisibility(
                 enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
                 exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.Center),
-                visible = isFabVisible
+                visible = isFabVisible,
             ) {
                 FloatingActionButton(
                     shape = CircleShape,
@@ -115,23 +115,23 @@ fun ImageListScreen(
                         coroutineScope.launch {
                             listState.animateScrollToItem(0, 0)
                         }
-                    }
+                    },
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_scroll),
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
             }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
     ) {
         Box(
             modifier = Modifier
                 .padding(it)
-                .nestedScroll(refreshState.nestedScrollConnection)
+                .nestedScroll(refreshState.nestedScrollConnection),
         ) {
             ImageList(
                 uiState = uiState,
@@ -142,7 +142,7 @@ fun ImageListScreen(
 
             PullToRefreshContainer(
                 modifier = Modifier.align(Alignment.TopCenter),
-                state = refreshState
+                state = refreshState,
             )
         }
 

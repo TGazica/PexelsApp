@@ -1,0 +1,25 @@
+apply plugin: "com.diffplug.spotless"
+
+def ruleSets = ["io.nlopez.compose.rules:ktlint:0.3.9"]
+def rulesOverride = [
+        "android"                                          : "true",
+        "ktlint_function_naming_ignore_when_annotated_with": "Composable, Test",
+        "ktlint_compose_modifier-missing-check"            : "disabled"
+]
+
+spotless {
+    encoding 'UTF-8'
+    kotlin {
+        target "**/*.kt"
+        targetExclude "**/build/**/*.kt"
+        ktlint("1.1.1")
+                .editorConfigOverride(rulesOverride)
+                .customRuleSets(ruleSets)
+        endWithNewline()
+    }
+    kotlinGradle {
+        target "*.gradle.kts"
+        ktlint()
+        endWithNewline()
+    }
+}

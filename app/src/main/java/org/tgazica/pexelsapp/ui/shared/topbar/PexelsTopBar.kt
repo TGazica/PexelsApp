@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 fun PexelsTopBar(
     title: String,
     @DrawableRes iconRes: Int,
-    onTitleClicked: (() -> Unit)? = null
+    onTitleClicked: (() -> Unit)? = null,
 ) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     TopAppBar(
@@ -28,19 +28,19 @@ fun PexelsTopBar(
             Text(
                 modifier = Modifier.clickable(
                     enabled = onTitleClicked != null,
-                    onClick = onTitleClicked ?: {}
+                    onClick = onTitleClicked ?: {},
                 ),
                 text = title,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         navigationIcon = {
             Icon(
                 modifier = Modifier.clickable { backPressedDispatcher?.onBackPressed() },
                 painter = painterResource(id = iconRes),
-                contentDescription = ""
+                contentDescription = "",
             )
-        }
+        },
     )
 }

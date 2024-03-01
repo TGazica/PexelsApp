@@ -25,17 +25,17 @@ fun Navigator() {
             ImageListScreen(
                 onImageClicked = {
                     controller.navigate(ImageDetails.navigateTo(it.id))
-                }
+                },
             )
         }
 
         composable(
             route = ImageDetails.DESTINATION,
-            arguments = listOf(navArgument(ImageDetails.IMAGE_ID) { type = NavType.IntType })
+            arguments = listOf(navArgument(ImageDetails.IMAGE_ID) { type = NavType.IntType }),
         ) {
             val imageId = it.arguments?.getInt(ImageDetails.IMAGE_ID) ?: 0
             val viewModel: ImageDetailsViewModel = koinViewModel(
-                parameters = { parametersOf(imageId) }
+                parameters = { parametersOf(imageId) },
             )
             ImageDetailsScreen(viewModel = viewModel)
         }
@@ -52,7 +52,6 @@ sealed interface NavDestination {
     val destination: String
 }
 
-
 /**
  * Class that is used to navigate to the images list screen.
  */
@@ -67,7 +66,7 @@ data class ImageList(override val destination: String = DESTINATION) : NavDestin
  */
 data class ImageDetails(
     val imageId: Int,
-    override val destination: String = navigateTo(imageId = imageId)
+    override val destination: String = navigateTo(imageId = imageId),
 ) : NavDestination {
     companion object {
         const val IMAGE_ID = "imageId"

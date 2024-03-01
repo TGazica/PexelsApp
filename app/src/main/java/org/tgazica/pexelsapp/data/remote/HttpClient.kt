@@ -23,7 +23,7 @@ fun createHttpClient(cache: AppCacheStorage) = HttpClient {
         json(
             Json {
                 ignoreUnknownKeys = true
-            }
+            },
         )
     }
 

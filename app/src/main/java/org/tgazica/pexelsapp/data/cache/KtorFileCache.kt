@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename")
+
 package org.tgazica.pexelsapp.data.cache
 
 import android.util.Log
@@ -50,11 +52,11 @@ interface AppCacheStorage : CacheStorage {
  */
 fun AppCacheStorage(
     directory: LocalCache,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ): AppCacheStorage = KtorCache(KtorFileCacheStorage(directory, dispatcher))
 
 private class KtorCache(
-    private val delegate: AppCacheStorage
+    private val delegate: AppCacheStorage,
 ) : AppCacheStorage {
 
     private val store = ConcurrentMap<Url, Set<CachedResponseData>>()
@@ -89,7 +91,7 @@ private class KtorCache(
 
 private class KtorFileCacheStorage(
     private val directory: File,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : AppCacheStorage {
 
     private val mutexes = ConcurrentMap<String, Mutex>()
@@ -141,7 +143,7 @@ private class KtorFileCacheStorage(
                 } catch (cause: Exception) {
                     Log.e(
                         this::class.java.simpleName,
-                        "Exception during saving a cache to a file: ${cause.stackTraceToString()}"
+                        "Exception during saving a cache to a file: ${cause.stackTraceToString()}",
                     )
                 }
             }
@@ -167,7 +169,7 @@ private class KtorFileCacheStorage(
             } catch (cause: Exception) {
                 Log.e(
                     this::class.java.simpleName,
-                    "Exception during cache lookup in a file: ${cause.stackTraceToString()}"
+                    "Exception during cache lookup in a file: ${cause.stackTraceToString()}",
                 )
                 return emptySet()
             }
@@ -232,7 +234,7 @@ private class KtorFileCacheStorage(
             expires = expirationTime,
             headers = headers.build(),
             varyKeys = varyKeys,
-            body = body
+            body = body,
         )
     }
 }

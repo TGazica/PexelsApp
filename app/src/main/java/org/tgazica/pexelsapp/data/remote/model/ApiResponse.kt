@@ -10,5 +10,5 @@ data class ApiResponse<T>(
     @JsonNames("photos")
     val data: List<T>,
     @JsonNames("next_page")
-    val nextPage: String?
+    val nextPage: String?,
 )

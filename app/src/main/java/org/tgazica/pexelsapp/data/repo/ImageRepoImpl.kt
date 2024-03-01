@@ -5,18 +5,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import org.tgazica.pexelsapp.data.cache.AppCacheStorage
 import org.tgazica.pexelsapp.data.remote.ImageService
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import org.tgazica.pexelsapp.data.cache.AppCacheStorage
 import org.tgazica.pexelsapp.util.NetworkConnectionListener
 import org.tgazica.pexelsapp.util.NoInternetException
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 internal class ImageRepoImpl(
     private val imageService: ImageService,
     private val cache: AppCacheStorage,
-    networkConnectionListener: NetworkConnectionListener
+    networkConnectionListener: NetworkConnectionListener,
 ) : ImageRepo {
 
     private val imagesCache: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
@@ -65,7 +65,7 @@ internal class ImageRepoImpl(
      */
     private suspend fun queryData(
         cancelWithoutConnection: Boolean = false,
-        block: suspend () -> Unit
+        block: suspend () -> Unit,
     ) {
         if (shouldThrowNoInternetException(cancelWithoutConnection)) throw NoInternetException()
 
@@ -93,7 +93,7 @@ internal class ImageRepoImpl(
      * @return whether the request should be canceled due to no network connection or not.
      */
     private fun shouldThrowNoInternetException(cancelWithoutConnection: Boolean): Boolean {
-        return (cancelWithoutConnection && !hasInternet.value)
-                || (hasReachedCacheEnd.get() && !hasInternet.value)
+        return (cancelWithoutConnection && !hasInternet.value) ||
+            (hasReachedCacheEnd.get() && !hasInternet.value)
     }
 }

@@ -5,7 +5,7 @@ jvmTarget = "1.8"
 
 # KOTLIN
 kotlin = "1.9.22"
-kotlinxSerialization = "1.6.0"
+kotlinxSerialization = "1.6.1"
 coroutines = "1.7.3"
 
 # ANDROID
@@ -29,6 +29,9 @@ slf4j = "2.0.12"
 
 # DATABASE
 room = "2.6.1"
+
+# UTIL
+spotless = "6.24.0"
 
 # TEST
 junit = "4.13.2"
@@ -90,4 +93,4 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

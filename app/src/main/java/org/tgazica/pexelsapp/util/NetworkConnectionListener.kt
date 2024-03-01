@@ -32,11 +32,13 @@ class NetworkConnectionListener(context: Context) {
 
     private fun NetworkCapabilities.isNetworkConnected(): Boolean {
         return hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
-                (hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                        hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
-                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                        hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+            hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+            (
+                hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                    hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                )
     }
 
     init {
@@ -51,4 +53,4 @@ class NetworkConnectionListener(context: Context) {
     }
 }
 
-class NoInternetException: Exception("No internet connection")
+class NoInternetException : Exception("No internet connection")

@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -23,8 +20,8 @@ import org.tgazica.pexelsapp.ui.model.toImageUiState
  */
 class ImageDetailsViewModel(
     private val imageId: Int,
-    private val imageRepo: ImageRepo
-): ViewModel() {
+    private val imageRepo: ImageRepo,
+) : ViewModel() {
 
     private val backgroundScope = viewModelScope + Dispatchers.IO
 

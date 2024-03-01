@@ -31,14 +31,14 @@ fun ImageList(
     uiState: ImageListUiState,
     scrollState: LazyStaggeredGridState,
     onImageClicked: (ImageUiState) -> Unit,
-    loadNextPage: () -> Unit
+    loadNextPage: () -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp),
-        state = scrollState
+        state = scrollState,
     ) {
         itemsIndexed(
             items = uiState.images,
@@ -51,10 +51,10 @@ fun ImageList(
                     .aspectRatio(image.aspectRatio)
                     .shadow(
                         elevation = 8.dp,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
                     )
                     .clip(shape = RoundedCornerShape(8.dp))
-                    .clickable { onImageClicked(image) }
+                    .clickable { onImageClicked(image) },
             )
 
             if (!uiState.isLoading && index >= uiState.images.size - 5) {

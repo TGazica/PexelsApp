@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
@@ -51,7 +52,7 @@ private const val MIN_ZOOM = 1f
  */
 @Composable
 fun ImageDetailsScreen(
-    viewModel: ImageDetailsViewModel
+    viewModel: ImageDetailsViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,9 +77,9 @@ fun ImageDetailsScreen(
             PexelsTopBar(
                 title = uiState.author,
                 iconRes = R.drawable.ic_back,
-                onTitleClicked = { context.openLink(uiState.authorUrl) }
+                onTitleClicked = { context.openLink(uiState.authorUrl) },
             )
-        }
+        },
     ) {
         // Used to hide/show the details when the image is zoomed in or not
         val scale = remember { mutableFloatStateOf(MIN_ZOOM) }
@@ -87,12 +88,12 @@ fun ImageDetailsScreen(
         Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(uiState.aspectRatio)
+                    .aspectRatio(uiState.aspectRatio),
             ) {
                 val density = LocalDensity.current
                 val parentSize =
@@ -101,27 +102,27 @@ fun ImageDetailsScreen(
                 PexelsImage(
                     modifier = Modifier.zoomable(
                         parentSize = parentSize,
-                        onScaleChanged = { scale.floatValue = it }
+                        onScaleChanged = { scale.floatValue = it },
                     ),
                     imageUrl = uiState.imageUrl,
-                    scale = ContentScale.FillBounds
+                    scale = ContentScale.FillBounds,
                 )
             }
 
             AnimatedVisibility(
                 visible = areDetailsVisible,
                 enter = fadeIn(),
-                exit = fadeOut()
+                exit = fadeOut(),
             ) {
                 Column {
                     ImageDetailsText(
                         text = "See more from ${uiState.author}",
-                        onClick = { context.openLink(uiState.authorUrl) }
+                        onClick = { context.openLink(uiState.authorUrl) },
                     )
 
                     ImageDetailsText(
                         text = "See full image details",
-                        onClick = { context.openLink(uiState.url) }
+                        onClick = { context.openLink(uiState.url) },
                     )
 
                     if (uiState.imageDescription.isNotBlank()) {
@@ -136,22 +137,21 @@ fun ImageDetailsScreen(
 @Composable
 private fun ImageDetailsText(
     text: String,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     Text(
         modifier = Modifier
             .clickable(enabled = onClick != null, onClick = onClick ?: {})
             .padding(8.dp),
         text = text,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
     )
 }
 
-@Composable
 private fun Modifier.zoomable(
     parentSize: Size,
-    onScaleChanged: (Float) -> Unit = {}
-): Modifier {
+    onScaleChanged: (Float) -> Unit = {},
+) = composed {
     var imageSize by remember { mutableStateOf(Size(0f, 0f)) }
 
     var currentScale by remember { mutableFloatStateOf(MIN_ZOOM) }
@@ -163,13 +163,12 @@ private fun Modifier.zoomable(
         onScaleChanged(currentScale)
     }
 
-    return this
-        .graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-            translationX = translation.x
-            translationY = translation.y
-        }
+    this.graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+        translationX = translation.x
+        translationY = translation.y
+    }
         .onGloballyPositioned {
             imageSize = Size(it.size.width.toFloat(), it.size.height.toFloat())
         }
@@ -214,7 +213,7 @@ private fun Modifier.zoomable(
                         newTranslationX.coerceIn(-maxTranslation.x, maxTranslation.x),
                         newTranslationY.coerceIn(-maxTranslation.y, maxTranslation.y),
                     )
-                }
+                },
             )
         }
 }
@@ -228,6 +227,3 @@ private fun calculateMaxOffset(imageSize: Size, scale: Float, parentSize: Size):
 private fun calculateMaxOffsetPerAxis(axisSize: Float, scale: Float, parentAxisSize: Float): Float {
     return (axisSize * scale - parentAxisSize).coerceAtLeast(0f) / 2
 }
-
-
-

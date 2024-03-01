@@ -4,4 +4,9 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.spotless) apply false
+}
+
+subprojects {
+    if (buildFile.exists()) apply("${rootDir}/spotless/spotless.gradle")
 }

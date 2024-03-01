@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.tgazica.pexelsapp.ui.shared.image.PexelsImage
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageItemPreviewProvider
 import org.tgazica.pexelsapp.ui.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.image.PexelsImage
 import org.tgazica.pexelsapp.ui.theme.PexelsAppTheme
 
 /**
@@ -31,7 +31,7 @@ import org.tgazica.pexelsapp.ui.theme.PexelsAppTheme
 @Composable
 fun ImageItem(
     uiState: ImageUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier,
@@ -39,7 +39,7 @@ fun ImageItem(
         PexelsImage(
             modifier = Modifier.fillMaxSize(),
             imageUrl = uiState.thumbnailUrl,
-            scale = ContentScale.Crop
+            scale = ContentScale.Crop,
         )
 
         Text(
@@ -48,30 +48,30 @@ fun ImageItem(
                 .padding(4.dp)
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(8.dp),
                 )
                 .padding(horizontal = 4.dp),
             text = uiState.author,
             fontSize = 12.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
 }
 
 @Preview(
     apiLevel = 33,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Preview(
     apiLevel = 33,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
 @Composable
 private fun ImageItemPreview(
     @PreviewParameter(ImageItemPreviewProvider::class)
-    uiState: ImageUiState
+    uiState: ImageUiState,
 ) {
     PexelsAppTheme {
         ImageItem(uiState = uiState)

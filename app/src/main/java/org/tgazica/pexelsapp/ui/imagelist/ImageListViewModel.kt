@@ -43,19 +43,19 @@ class ImageListViewModel(
     val uiState: StateFlow<ImageListUiState> = combine(
         images,
         isLoading,
-        error
+        error,
     ) { images, isLoading, error ->
         ImageListUiState(
             images = images,
             isLoading = isLoading,
-            error = error
+            error = error,
         )
     }.onStart {
         if (images.value.isEmpty()) loadNextPage()
     }.stateIn(
         scope = backgroundScope,
         started = SharingStarted.WhileSubscribed(STATE_DURATION_MILLIS),
-        initialValue = ImageListUiState()
+        initialValue = ImageListUiState(),
     )
 
     fun loadNextPage() {
@@ -78,7 +78,7 @@ class ImageListViewModel(
     }.stateIn(
         scope = backgroundScope,
         started = SharingStarted.WhileSubscribed(STATE_DURATION_MILLIS),
-        initialValue = initialValue
+        initialValue = initialValue,
     )
 
     companion object {

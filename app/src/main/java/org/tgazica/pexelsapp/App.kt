@@ -18,10 +18,9 @@ class App : Application() {
             modules(
                 listOf(
                     dataModule,
-                    uiModule
-                )
+                    uiModule,
+                ),
             )
         }
     }
-
 }

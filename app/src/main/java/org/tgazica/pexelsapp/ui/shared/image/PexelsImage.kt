@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import coil.size.Scale
 import kotlinx.coroutines.Dispatchers
 import org.tgazica.pexelsapp.R
 import org.tgazica.pexelsapp.ui.util.createPlaceholder
@@ -36,10 +35,10 @@ import org.tgazica.pexelsapp.ui.util.createPlaceholder
 fun PexelsImage(
     imageUrl: String,
     scale: ContentScale,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val placeholder = createPlaceholder(iconRes = R.drawable.ic_placeholder)
         val missingPlaceholder = createPlaceholder(iconRes = R.drawable.ic_placeholder_no_image)
@@ -63,7 +62,7 @@ fun PexelsImage(
                     },
                     onCancel = {
                         isLoading = false
-                    }
+                    },
                 )
                 .crossfade(true)
                 .fetcherDispatcher(Dispatchers.IO)
@@ -82,14 +81,14 @@ fun PexelsImage(
             modifier = Modifier.fillMaxSize(),
             model = imageRequest,
             contentDescription = "",
-            contentScale = scale
+            contentScale = scale,
         )
 
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(100.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             )
         }
     }

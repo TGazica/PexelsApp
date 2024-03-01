@@ -28,5 +28,5 @@ fun ApiImage.toImageUiState() = ImageUiState(
     author = photographer,
     authorUrl = photographerUrl,
     aspectRatio = width.toFloat() / height,
-    imageDescription = alt
+    imageDescription = alt,
 )

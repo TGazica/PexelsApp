@@ -10,5 +10,5 @@ import org.tgazica.pexelsapp.ui.model.ImageUiState
 data class ImageListUiState(
     val images: List<ImageUiState> = emptyList(),
     val isLoading: Boolean = false,
-    val error: Throwable? = null
+    val error: Throwable? = null,
 )
