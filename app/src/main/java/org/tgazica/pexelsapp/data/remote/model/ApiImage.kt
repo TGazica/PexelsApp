@@ -13,6 +13,8 @@ data class ApiImage(
     val url: String,
     val src: ApiImageSrc,
     val photographer: String,
+    @JsonNames("photographer_url")
+    val photographerUrl: String,
     @JsonNames("avg_color")
     val avgColor: String,
     val alt: String

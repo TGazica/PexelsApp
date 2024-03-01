@@ -1,21 +1,30 @@
 package org.tgazica.pexelsapp.ui.imagedetails
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -23,11 +32,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import org.tgazica.pexelsapp.R
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 import org.tgazica.pexelsapp.ui.shared.image.PexelsImage
 import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
+import org.tgazica.pexelsapp.ui.util.openLink
 
 private const val MAX_ZOOM = 10f
 private const val MIN_ZOOM = 1f
@@ -47,77 +59,153 @@ fun ImageDetailsScreen(
 fun ImageDetailsScreen(
     uiState: ImageUiState,
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             PexelsTopBar(
                 title = uiState.author,
-                iconRes = R.drawable.ic_back
+                iconRes = R.drawable.ic_back,
+                onTitleClicked = { context.openLink(uiState.authorUrl) }
             )
         }
     ) {
-        BoxWithConstraints(
+        val scale = remember { mutableFloatStateOf(MIN_ZOOM) }
+        val areDetailsVisible by remember { derivedStateOf { scale.floatValue == MIN_ZOOM } }
+
+        Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
         ) {
-            val density = LocalDensity.current
-            val parentSize = Size(density.run { maxWidth.toPx() }, density.run { maxHeight.toPx() })
-            var imageSize by remember { mutableStateOf(Size(0f, 0f)) }
-
-            var currentScale by remember { mutableStateOf(MIN_ZOOM) }
-            var translation by remember { mutableStateOf(Offset(0f, 0f)) }
-
-            val scale by animateFloatAsState(targetValue = currentScale)
-
-            PexelsImage(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(uiState.aspectRatio)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                        translationX = translation.x
-                        translationY = translation.y
-                    }
-                    .onGloballyPositioned {
-                        imageSize = Size(it.size.width.toFloat(), it.size.height.toFloat())
-                    }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
-                            currentScale = (zoom * currentScale).coerceIn(MIN_ZOOM, MAX_ZOOM)
+            ) {
+                val density = LocalDensity.current
+                val parentSize =
+                    Size(density.run { maxWidth.toPx() }, density.run { maxHeight.toPx() })
 
-                            val maxTranslation = calculateMaxOffset(
-                                imageSize = imageSize,
-                                scale = currentScale,
-                                parentSize = parentSize,
-                            )
+                PexelsImage(
+                    modifier = Modifier.zoomable(
+                        parentSize = parentSize,
+                        onScaleChanged = { scale.floatValue = it }
+                    ),
+                    imageUrl = uiState.imageUrl,
+                    scale = ContentScale.FillBounds
+                )
+            }
 
-                            val newTranslationX = translation.x + pan.x * currentScale
-                            val newTranslationY = translation.y + pan.y * currentScale
+            AnimatedVisibility(
+                visible = areDetailsVisible,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Column {
+                    ImageDetailsText(
+                        text = "See more from ${uiState.author}",
+                        onClick = { context.openLink(uiState.authorUrl) }
+                    )
 
-                            translation = Offset(
-                                newTranslationX.coerceIn(-maxTranslation.x, maxTranslation.x),
-                                newTranslationY.coerceIn(-maxTranslation.y, maxTranslation.y),
-                            )
-                        }
+                    ImageDetailsText(
+                        text = "See full image details",
+                        onClick = { context.openLink(uiState.url) }
+                    )
+
+                    if (uiState.imageDescription.isNotBlank()) {
+                        ImageDetailsText(text = "Description: ${uiState.imageDescription}")
                     }
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onDoubleTap = {
-                                if (currentScale > MIN_ZOOM) {
-                                    currentScale = MIN_ZOOM
-                                } else {
-                                    currentScale = MAX_ZOOM / 2
-                                }
-                            }
-                        )
-                    },
-                imageUrl = uiState.imageUrl,
-                scale = ContentScale.FillBounds
-            )
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun ImageDetailsText(
+    text: String,
+    onClick: (() -> Unit)? = null
+) {
+    Text(
+        modifier = Modifier
+            .clickable(enabled = onClick != null, onClick = onClick ?: {})
+            .padding(8.dp),
+        text = text,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+private fun Modifier.zoomable(
+    parentSize: Size,
+    onScaleChanged: (Float) -> Unit = {}
+): Modifier {
+    var imageSize by remember { mutableStateOf(Size(0f, 0f)) }
+
+    var currentScale by remember { mutableFloatStateOf(MIN_ZOOM) }
+    var translation by remember { mutableStateOf(Offset(0f, 0f)) }
+
+    val scale by animateFloatAsState(targetValue = currentScale, label = "scale")
+
+    LaunchedEffect(key1 = currentScale) {
+        onScaleChanged(currentScale)
+    }
+
+    return this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+            translationX = translation.x
+            translationY = translation.y
+        }
+        .onGloballyPositioned {
+            imageSize = Size(it.size.width.toFloat(), it.size.height.toFloat())
+        }
+        .pointerInput(Unit) {
+            detectTransformGestures { _, pan, zoom, _ ->
+                currentScale = (zoom * currentScale).coerceIn(MIN_ZOOM, MAX_ZOOM)
+
+                val maxTranslation = calculateMaxOffset(
+                    imageSize = imageSize,
+                    scale = currentScale,
+                    parentSize = parentSize,
+                )
+
+                val newTranslationX = translation.x + pan.x * currentScale
+                val newTranslationY = translation.y + pan.y * currentScale
+
+                translation = Offset(
+                    newTranslationX.coerceIn(-maxTranslation.x, maxTranslation.x),
+                    newTranslationY.coerceIn(-maxTranslation.y, maxTranslation.y),
+                )
+            }
+        }
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onDoubleTap = {
+                    currentScale = if (currentScale > MIN_ZOOM) {
+                        MIN_ZOOM
+                    } else {
+                        MAX_ZOOM / 2
+                    }
+
+                    val maxTranslation = calculateMaxOffset(
+                        imageSize = imageSize,
+                        scale = currentScale,
+                        parentSize = parentSize,
+                    )
+
+                    val newTranslationX = translation.x + currentScale
+                    val newTranslationY = translation.y + currentScale
+
+                    translation = Offset(
+                        newTranslationX.coerceIn(-maxTranslation.x, maxTranslation.x),
+                        newTranslationY.coerceIn(-maxTranslation.y, maxTranslation.y),
+                    )
+                }
+            )
+        }
 }
 
 private fun calculateMaxOffset(imageSize: Size, scale: Float, parentSize: Size): Offset {
