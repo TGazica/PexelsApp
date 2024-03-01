@@ -13,7 +13,7 @@ import org.tgazica.pexelsapp.data.cache.AppCacheStorage
 import org.tgazica.pexelsapp.util.NetworkConnectionListener
 import org.tgazica.pexelsapp.util.NoInternetException
 
-class ImageRepoImpl(
+internal class ImageRepoImpl(
     private val imageService: ImageService,
     private val cache: AppCacheStorage,
     networkConnectionListener: NetworkConnectionListener
@@ -56,13 +56,18 @@ class ImageRepoImpl(
         }
     }
 
+    /**
+     * Used to query remote data and to handle errors that may come from the remote server.
+     *
+     * @param cancelWithoutConnection If the request should be canceled on no network connection
+     * skipping loading from cache.
+     * @param block the operation we wish to execute.
+     */
     private suspend fun queryData(
         cancelWithoutConnection: Boolean = false,
         block: suspend () -> Unit
     ) {
-        if (hasReachedCacheEnd.get()
-            && (!hasInternet.value && cancelWithoutConnection)
-        ) throw NoInternetException()
+        if (shouldThrowNoInternetException(cancelWithoutConnection)) throw NoInternetException()
 
         if (isLoading.value) return
         isLoading.update { true }
@@ -79,5 +84,16 @@ class ImageRepoImpl(
         } finally {
             isLoading.update { false }
         }
+    }
+
+    /**
+     * @param cancelWithoutConnection If the request should be canceled on no network connection
+     * skipping loading from cache.
+     *
+     * @return whether the request should be canceled due to no network connection or not.
+     */
+    private fun shouldThrowNoInternetException(cancelWithoutConnection: Boolean): Boolean {
+        return (cancelWithoutConnection && !hasInternet.value)
+                || (hasReachedCacheEnd.get() && !hasInternet.value)
     }
 }

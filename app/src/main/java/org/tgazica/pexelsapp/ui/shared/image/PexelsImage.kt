@@ -22,6 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import org.tgazica.pexelsapp.R
 import org.tgazica.pexelsapp.ui.util.createPlaceholder
 
+/**
+ * Shared composable used to show an image loaded from the Pexels api.
+ * Will show the loading spinner while the image is being loaded and will show different
+ * placeholders depending on the image loading state.
+ *
+ * @param imageUrl The image we wish to load.
+ * @param scale [ContentScale] to provide how we wish for the image to be cropped/fitted inside the
+ * image container.
+ * @param modifier [Modifier] used to pass custom ui modifications to the composable.
+ */
 @Composable
 fun PexelsImage(
     imageUrl: String,

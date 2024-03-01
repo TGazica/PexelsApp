@@ -12,6 +12,10 @@ import org.tgazica.pexelsapp.ui.imagedetails.ImageDetailsScreen
 import org.tgazica.pexelsapp.ui.imagedetails.ImageDetailsViewModel
 import org.tgazica.pexelsapp.ui.imagelist.ImageListScreen
 
+/**
+ * Entry point to the apps navigation. Keeps track of the current screen, as well as navigates
+ * to the next requested screen.
+ */
 @Composable
 fun Navigator() {
     val controller = rememberNavController()
@@ -38,19 +42,32 @@ fun Navigator() {
     }
 }
 
+/**
+ * Interface for all of the destinations in the app.
+ */
 sealed interface NavDestination {
+    /**
+     * The string used to identify each of the navigation destinations.
+     */
     val destination: String
 }
 
+
+/**
+ * Class that is used to navigate to the images list screen.
+ */
 data class ImageList(override val destination: String = DESTINATION) : NavDestination {
     companion object {
         const val DESTINATION = "list"
     }
 }
 
+/**
+ * Class that is used to navigate to the images details screen.
+ */
 data class ImageDetails(
-    val image: Int,
-    override val destination: String = navigateTo(imageId = image)
+    val imageId: Int,
+    override val destination: String = navigateTo(imageId = imageId)
 ) : NavDestination {
     companion object {
         const val IMAGE_ID = "imageId"

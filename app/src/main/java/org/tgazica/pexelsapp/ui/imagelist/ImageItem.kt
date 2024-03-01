@@ -22,7 +22,12 @@ import org.tgazica.pexelsapp.ui.imagelist.model.ImageItemPreviewProvider
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 import org.tgazica.pexelsapp.ui.theme.PexelsAppTheme
 
-
+/**
+ * Ui for a single image in the image list.
+ *
+ * @param uiState The state of the image we wish to show.
+ * @param modifier Used to apply custom ui modifications on the image item.
+ */
 @Composable
 fun ImageItem(
     uiState: ImageUiState,

@@ -14,7 +14,11 @@ import kotlinx.serialization.json.Json
 import org.tgazica.pexelsapp.BuildConfig
 import org.tgazica.pexelsapp.data.cache.AppCacheStorage
 
+/**
+ * Used to create the ktor [HttpClient] for making network requests.
+ */
 fun createHttpClient(cache: AppCacheStorage) = HttpClient {
+    // Adds JSON compatibility
     install(ContentNegotiation) {
         json(
             Json {

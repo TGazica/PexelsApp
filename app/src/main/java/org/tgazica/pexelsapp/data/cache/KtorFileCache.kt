@@ -3,6 +3,7 @@ package org.tgazica.pexelsapp.data.cache
 import android.util.Log
 import io.ktor.client.plugins.cache.storage.CacheStorage
 import io.ktor.client.plugins.cache.storage.CachedResponseData
+import io.ktor.client.plugins.cache.storage.FileStorage
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpProtocolVersion
 import io.ktor.http.HttpStatusCode
@@ -32,10 +33,21 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.MessageDigest
 
+/**
+ * Interface expanding on out-of-the-box [CacheStorage] to enable cache clearing.
+ */
 interface AppCacheStorage : CacheStorage {
+    /**
+     * Clears both in-memory and in-storage cache.
+     */
     suspend fun clearCache()
 }
 
+/**
+ * Used to instantiate the [AppCacheStorage] interface with implementation.
+ *
+ * @see FileStorage for the ktor out-of-the-box solution.
+ */
 fun AppCacheStorage(
     directory: LocalCache,
     dispatcher: CoroutineDispatcher = Dispatchers.IO

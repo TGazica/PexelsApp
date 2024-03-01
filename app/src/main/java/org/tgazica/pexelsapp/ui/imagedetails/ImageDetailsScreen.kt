@@ -44,6 +44,11 @@ import org.tgazica.pexelsapp.ui.util.openLink
 private const val MAX_ZOOM = 10f
 private const val MIN_ZOOM = 1f
 
+/**
+ * Stateful implementation for the image details screen.
+ *
+ * @param viewModel The [ImageDetailsViewModel] containing presentation logic for the image details.
+ */
 @Composable
 fun ImageDetailsScreen(
     viewModel: ImageDetailsViewModel
@@ -55,6 +60,11 @@ fun ImageDetailsScreen(
     )
 }
 
+/**
+ * Stateless implementation of the image details screen. Is driven by external [ImageUiState].
+ *
+ * @param uiState The image for which we wish to display the details for.
+ */
 @Composable
 fun ImageDetailsScreen(
     uiState: ImageUiState,
@@ -70,6 +80,7 @@ fun ImageDetailsScreen(
             )
         }
     ) {
+        // Used to hide/show the details when the image is zoomed in or not
         val scale = remember { mutableFloatStateOf(MIN_ZOOM) }
         val areDetailsVisible by remember { derivedStateOf { scale.floatValue == MIN_ZOOM } }
 

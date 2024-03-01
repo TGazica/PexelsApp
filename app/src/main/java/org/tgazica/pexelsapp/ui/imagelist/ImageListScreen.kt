@@ -39,9 +39,15 @@ import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
 
+/**
+ * Stateful implementation of the image list.
+ * 
+ * @param viewModel [ImageListViewModel] that contains presentation logic for the image list screen.
+ * @param onImageClicked Notifies when the user clicks on an image.
+ */
 @Composable
 fun ImageListScreen(
-    viewModel: ImageViewModel = koinViewModel(),
+    viewModel: ImageListViewModel = koinViewModel(),
     onImageClicked: (ImageUiState) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -54,6 +60,14 @@ fun ImageListScreen(
     )
 }
 
+/**
+ * Stateless implementation of the image list. The state is driven by an outside [uiState].
+ *
+ * @param uiState [ImageListUiState] that contains the current ui state of the image list screen.
+ * @param onImageClicked Notifies when the user clicks on an image.
+ * @param loadNextPage Notifies when the list has reached the end and needs a new page.
+ * @param refreshImages Notifies when user pulls to refresh the images.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageListScreen(

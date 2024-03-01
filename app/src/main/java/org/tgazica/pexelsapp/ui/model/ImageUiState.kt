@@ -2,6 +2,9 @@ package org.tgazica.pexelsapp.ui.model
 
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 
+/**
+ * State of a single image.
+ */
 data class ImageUiState(
     val id: Int = 0,
     val url: String = "",
@@ -14,6 +17,9 @@ data class ImageUiState(
 
 )
 
+/**
+ * Mapper used to map the [ApiImage] to [ImageUiState]
+ */
 fun ApiImage.toImageUiState() = ImageUiState(
     id = id,
     url = url,

@@ -18,6 +18,14 @@ import androidx.compose.ui.unit.dp
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 
+/**
+ * Used to show the image list.
+ *
+ * @param uiState The current state of the image list.
+ * @param scrollState The current scroll state of the image list.
+ * @param onImageClicked Listener to notify when the user clicks on an image.
+ * @param loadNextPage Notifies when the list has reached the end and needs a new page.
+ */
 @Composable
 fun ImageList(
     uiState: ImageListUiState,

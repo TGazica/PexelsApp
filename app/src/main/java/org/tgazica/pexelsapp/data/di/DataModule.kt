@@ -12,6 +12,9 @@ import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.data.repo.ImageRepoImpl
 import org.tgazica.pexelsapp.util.NetworkConnectionListener
 
+/**
+ * Koin module used to inject data layer dependencies.
+ */
 val dataModule = module {
     singleOf(::createHttpClient)
 

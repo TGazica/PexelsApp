@@ -8,7 +8,7 @@ import org.tgazica.pexelsapp.data.baseUrl
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import org.tgazica.pexelsapp.data.remote.model.ApiResponse
 
-class ImageServiceImpl(
+internal class ImageServiceImpl(
     private val httpClient: HttpClient
 ): ImageService {
 

@@ -12,6 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import org.tgazica.pexelsapp.R
 
+/**
+ * Ease of use function to tin layer-list placeholder drawable resources.
+ */
 @Composable
 fun createPlaceholder(@DrawableRes iconRes: Int): Drawable {
     val shapeRectangle = ContextCompat.getDrawable(LocalContext.current, iconRes) as LayerDrawable?

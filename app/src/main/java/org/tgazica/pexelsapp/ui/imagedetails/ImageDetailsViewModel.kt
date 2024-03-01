@@ -15,6 +15,12 @@ import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.ui.model.ImageUiState
 import org.tgazica.pexelsapp.ui.model.toImageUiState
 
+/**
+ * [ViewModel] implementation for the image details screen.
+ *
+ * @param imageId The image we wish to show the details for.
+ * @param imageRepo Source of data for the image.
+ */
 class ImageDetailsViewModel(
     private val imageId: Int,
     private val imageRepo: ImageRepo
