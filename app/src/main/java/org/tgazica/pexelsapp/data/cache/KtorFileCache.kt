@@ -41,7 +41,7 @@ fun AppCacheStorage(
     dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): AppCacheStorage = KtorCache(KtorFileCacheStorage(directory, dispatcher))
 
-class KtorCache(
+private class KtorCache(
     private val delegate: AppCacheStorage
 ) : AppCacheStorage {
 

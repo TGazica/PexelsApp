@@ -22,7 +22,7 @@ class ImageRepoImpl(
 
     private val imagesCache: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
     private val resultImages: MutableStateFlow<Result<List<ApiImage>>> =
-        MutableStateFlow(Result.Success(emptyList()))
+        MutableStateFlow(Result.Success(imagesCache.value))
 
     private val hasReachedEnd: AtomicBoolean = AtomicBoolean(false)
     private val currentPage: AtomicInteger = AtomicInteger(0)
@@ -36,30 +36,38 @@ class ImageRepoImpl(
     }
 
     override suspend fun loadNextPage() {
-        if (resultImages.value.isLoading() || hasReachedEnd.get()) return
-        resultImages.update { Result.Loading() }
+        try {
+            if (resultImages.value.isLoading() || hasReachedEnd.get()) return
+            resultImages.update { Result.Loading() }
 
-        val page = currentPage.incrementAndGet()
-        val imagesResponse = imageService.getImages(page)
+            val page = currentPage.incrementAndGet()
+            val imagesResponse = imageService.getImages(page)
 
-        hasReachedEnd.set(imagesResponse.nextPage == null)
+            hasReachedEnd.set(imagesResponse.nextPage == null)
 
-        val apiImages = imagesResponse.data
+            val apiImages = imagesResponse.data
 
-        val images = imagesCache.updateAndGet { (it + apiImages).distinctBy { it.id } }
-        resultImages.update { Result.Success(images) }
+            val images = imagesCache.updateAndGet { (it + apiImages).distinctBy { it.id } }
+            resultImages.update { Result.Success(images) }
+        } catch (e: Exception) {
+            resultImages.update { Result.Error(e) }
+        }
     }
 
     override suspend fun refreshImages() {
-        if (resultImages.value.isLoading()) return
-        resultImages.update { Result.Loading() }
+        try {
+            if (resultImages.value.isLoading()) return
+            resultImages.update { Result.Loading() }
 
-        cache.clearCache()
+            cache.clearCache()
 
-        currentPage.set(1)
+            currentPage.set(1)
 
-        val apiImages = imageService.getImages(1)
-        val images = imagesCache.updateAndGet { apiImages.data }
-        resultImages.update { Result.Success(images) }
+            val apiImages = imageService.getImages(1)
+            val images = imagesCache.updateAndGet { apiImages.data }
+            resultImages.update { Result.Success(images) }
+        } catch (e: Exception) {
+            resultImages.update { Result.Error(e) }
+        }
     }
 }
