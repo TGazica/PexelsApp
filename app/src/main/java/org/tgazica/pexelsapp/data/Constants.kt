@@ -1,3 +1,3 @@
 package org.tgazica.pexelsapp.data
 
-val baseUrl = "https://api.pexels.com/v1"
+const val BASE_URL = "https://api.pexels.com/v1"

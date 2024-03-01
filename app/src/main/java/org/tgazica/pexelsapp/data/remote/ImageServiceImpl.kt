@@ -4,7 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import org.tgazica.pexelsapp.data.baseUrl
+import org.tgazica.pexelsapp.data.BASE_URL
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import org.tgazica.pexelsapp.data.remote.model.ApiResponse
 
@@ -13,7 +13,7 @@ internal class ImageServiceImpl(
 ) : ImageService {
 
     override suspend fun getImages(page: Int): ApiResponse<ApiImage> {
-        return httpClient.get("$baseUrl/curated") {
+        return httpClient.get("$BASE_URL/curated") {
             parameter(PARAMETER_PAGE, page)
             parameter(PARAMETER_PER_PAGE, PAGE_SIZE)
         }.body()
