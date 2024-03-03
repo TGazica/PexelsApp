@@ -30,7 +30,7 @@ class ImageDetailsViewModel(
 
     init {
         backgroundScope.launch {
-            val image = imageRepo.getImageById(imageId)
+            val image = imageRepo.getImage(imageId)
             _uiState.update { image.toImageUiState() }
         }
     }

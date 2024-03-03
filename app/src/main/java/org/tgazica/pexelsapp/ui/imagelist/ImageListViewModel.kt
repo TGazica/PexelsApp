@@ -36,9 +36,7 @@ class ImageListViewModel(
     private val images: StateFlow<List<ImageUiState>> = observeData(emptyList()) {
         imageRepo.observeImages().mapLatest { it.map { it.toImageUiState() } }
     }
-    private val isLoading = observeData(false) {
-        imageRepo.observeLoadingState()
-    }
+    private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val uiState: StateFlow<ImageListUiState> = combine(
         images,
@@ -59,14 +57,29 @@ class ImageListViewModel(
     )
 
     fun loadNextPage() {
-        backgroundScope.launch {
+        queryData {
             imageRepo.loadNextPage()
         }
     }
 
     fun refreshImages() {
-        backgroundScope.launch {
+        queryData {
             imageRepo.refreshImages()
+        }
+    }
+
+    private fun queryData(block: suspend () -> Unit) {
+        backgroundScope.launch {
+            if (isLoading.value) return@launch
+            try {
+                isLoading.update { true }
+                block()
+                isLoading.update { false }
+            }catch (e: Exception) {
+                isLoading.update { false }
+                error.update { it }
+                throw e
+            }
         }
     }
 

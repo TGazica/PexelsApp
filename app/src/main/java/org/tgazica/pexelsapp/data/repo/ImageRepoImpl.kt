@@ -20,7 +20,6 @@ internal class ImageRepoImpl(
 ) : ImageRepo {
 
     private val imagesCache: MutableStateFlow<List<ApiImage>> = MutableStateFlow(emptyList())
-    private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val hasInternet = networkConnectionListener.isNetworkAvailable
 
     private val hasReachedEnd: AtomicBoolean = AtomicBoolean(false)
@@ -31,9 +30,7 @@ internal class ImageRepoImpl(
         if (imagesCache.value.isEmpty() && hasInternet) loadNextPage()
     }.flatMapLatest { imagesCache }
 
-    override suspend fun observeLoadingState(): Flow<Boolean> = isLoading
-
-    override suspend fun getImageById(imageId: Int): ApiImage {
+    override suspend fun getImage(imageId: Int): ApiImage {
         return imagesCache.value.first { it.id == imageId }
     }
 
@@ -69,8 +66,6 @@ internal class ImageRepoImpl(
     ) {
         if (shouldThrowNoInternetException(cancelWithoutConnection)) throw NoInternetException()
 
-        if (isLoading.value) return
-        isLoading.update { true }
         try {
             block()
             hasReachedCacheEnd.set(false)
@@ -81,8 +76,6 @@ internal class ImageRepoImpl(
             } else {
                 exception
             }
-        } finally {
-            isLoading.update { false }
         }
     }
 

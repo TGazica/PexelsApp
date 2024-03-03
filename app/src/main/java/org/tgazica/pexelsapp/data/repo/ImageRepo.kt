@@ -14,16 +14,11 @@ interface ImageRepo {
     suspend fun observeImages(): Flow<List<ApiImage>>
 
     /**
-     * @return Stream that notifies if loading is currently in progress.
-     */
-    suspend fun observeLoadingState(): Flow<Boolean>
-
-    /**
      * @param imageId Id of the image we wish to query.
      *
      * @return a single image.
      */
-    suspend fun getImageById(imageId: Int): ApiImage
+    suspend fun getImage(imageId: Int): ApiImage
 
     /**
      * Requests the next page to be loaded.
