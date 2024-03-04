@@ -75,7 +75,7 @@ class ImageListViewModel(
                 isLoading.update { true }
                 block()
                 isLoading.update { false }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 isLoading.update { false }
                 error.update { it }
                 throw e

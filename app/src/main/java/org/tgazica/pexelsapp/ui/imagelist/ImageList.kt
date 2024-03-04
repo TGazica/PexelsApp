@@ -32,8 +32,10 @@ fun ImageList(
     scrollState: LazyStaggeredGridState,
     onImageClicked: (ImageUiState) -> Unit,
     loadNextPage: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalStaggeredGrid(
+        modifier = modifier,
         columns = StaggeredGridCells.Adaptive(150.dp),
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),

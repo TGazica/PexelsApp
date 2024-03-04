@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
@@ -134,6 +135,7 @@ fun ImageListScreen(
                 .nestedScroll(refreshState.nestedScrollConnection),
         ) {
             ImageList(
+                modifier = Modifier.fillMaxSize(),
                 uiState = uiState,
                 scrollState = listState,
                 onImageClicked = onImageClicked,

@@ -1,6 +1,7 @@
 package org.tgazica.pexelsapp.ui.model
 
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
+import kotlin.math.max
 
 /**
  * State of a single image.
@@ -12,10 +13,13 @@ data class ImageUiState(
     val thumbnailUrl: String = "",
     val author: String = "",
     val authorUrl: String = "",
-    val aspectRatio: Float = 1f,
+    val width: Int = 1,
+    val height: Int = 1,
     val imageDescription: String = "",
-
-)
+) {
+    val aspectRatio: Float = max(0.1f, width.toFloat() / height)
+    val imageDimensions: String = "${width}x$height"
+}
 
 /**
  * Mapper used to map the [ApiImage] to [ImageUiState]
@@ -27,6 +31,7 @@ fun ApiImage.toImageUiState() = ImageUiState(
     thumbnailUrl = src.medium,
     author = photographer,
     authorUrl = photographerUrl,
-    aspectRatio = width.toFloat() / height,
+    width = width,
+    height = height,
     imageDescription = alt,
 )
