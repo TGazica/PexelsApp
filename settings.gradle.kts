@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PexelApp"
 include(":app")
+include(":baselineprofile")
