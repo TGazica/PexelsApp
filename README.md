@@ -1,7 +1,7 @@
 # Pexels curated photos app
 
  - App is build upon the MVVM architecture
- - Networking and response caching is done through KTOR
+ - Networking and response caching is done through Ktor
  - Async is done using Kotlin Coroutines
  - UI is written in Jetpack Compose
  - Koin is used for dependency management and injection
