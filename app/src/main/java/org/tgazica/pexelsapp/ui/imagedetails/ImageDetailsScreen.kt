@@ -38,9 +38,9 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.tgazica.pexelsapp.R
-import org.tgazica.pexelsapp.ui.model.ImageUiState
-import org.tgazica.pexelsapp.ui.shared.image.PexelsImage
-import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
+import org.tgazica.pexelsapp.ui.shared.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.PexelsImage
+import org.tgazica.pexelsapp.ui.shared.PexelsTopBar
 import org.tgazica.pexelsapp.ui.util.openLink
 import org.tgazica.pexelsapp.ui.util.zoomable
 

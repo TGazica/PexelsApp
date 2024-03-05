@@ -58,9 +58,11 @@ class BaselineProfileGenerator {
 
             device.wait(Until.hasObject(By.res("image_list")), 20000)
             val imageList = device.findObject(By.res("image_list"))
-            imageList.setGestureMargin(device.displayWidth / 5)
+            imageList.setGestureMargins(0, 200, 0, 200)
             // Scroll a certain amount
-            imageList?.scroll(Direction.DOWN, 2000f, 4000)
+            imageList?.scroll(Direction.DOWN, 2000f)
+            device.waitForWindowUpdate(null, 2000)
+            imageList?.scroll(Direction.DOWN, 2000f)
             // Open details page
             imageList.children.firstOrNull()?.click()
         }

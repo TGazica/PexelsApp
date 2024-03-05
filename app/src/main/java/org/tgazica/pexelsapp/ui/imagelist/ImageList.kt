@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
-import org.tgazica.pexelsapp.ui.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.model.ImageUiState
 
 /**
  * Used to show the image list.

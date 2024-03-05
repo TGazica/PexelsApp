@@ -1,4 +1,4 @@
-package org.tgazica.pexelsapp.ui.shared.image
+package org.tgazica.pexelsapp.ui.shared
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

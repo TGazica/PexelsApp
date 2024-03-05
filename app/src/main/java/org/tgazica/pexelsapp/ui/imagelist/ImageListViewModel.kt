@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.tgazica.pexelsapp.data.repo.ImageRepo
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
-import org.tgazica.pexelsapp.ui.model.ImageUiState
-import org.tgazica.pexelsapp.ui.model.toImageUiState
+import org.tgazica.pexelsapp.ui.shared.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.model.toImageUiState
 
 class ImageListViewModel(
     private val imageRepo: ImageRepo,

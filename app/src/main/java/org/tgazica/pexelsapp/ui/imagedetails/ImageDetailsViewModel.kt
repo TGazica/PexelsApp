@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.tgazica.pexelsapp.data.repo.ImageRepo
-import org.tgazica.pexelsapp.ui.model.ImageUiState
-import org.tgazica.pexelsapp.ui.model.toImageUiState
+import org.tgazica.pexelsapp.ui.shared.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.model.toImageUiState
 
 /**
  * [ViewModel] implementation for the image details screen.

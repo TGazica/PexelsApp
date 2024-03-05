@@ -1,4 +1,4 @@
-package org.tgazica.pexelsapp.ui.shared.topbar
+package org.tgazica.pexelsapp.ui.shared
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.annotation.DrawableRes

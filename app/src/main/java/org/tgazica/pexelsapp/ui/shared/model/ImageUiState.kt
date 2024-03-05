@@ -1,4 +1,4 @@
-package org.tgazica.pexelsapp.ui.model
+package org.tgazica.pexelsapp.ui.shared.model
 
 import org.tgazica.pexelsapp.data.remote.model.ApiImage
 import kotlin.math.max

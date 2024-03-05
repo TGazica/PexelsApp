@@ -37,8 +37,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.tgazica.pexelsapp.R
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
-import org.tgazica.pexelsapp.ui.model.ImageUiState
-import org.tgazica.pexelsapp.ui.shared.topbar.PexelsTopBar
+import org.tgazica.pexelsapp.ui.shared.model.ImageUiState
+import org.tgazica.pexelsapp.ui.shared.PexelsTopBar
 
 /**
  * Stateful implementation of the image list.

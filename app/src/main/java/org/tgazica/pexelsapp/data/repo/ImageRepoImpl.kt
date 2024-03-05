@@ -80,8 +80,8 @@ internal class ImageRepoImpl(
     }
 
     /**
-     * @param cancelWithoutConnection If the request should be canceled on no network connection
-     * skipping loading from cache.
+     * @param cancelWithoutConnection If the request should cancel and skip cache if there is no
+     * network connection.
      *
      * @return whether the request should be canceled due to no network connection or not.
      */
