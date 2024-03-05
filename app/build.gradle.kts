@@ -24,15 +24,34 @@ android {
         }
     }
 
+    signingConfigs {
+        // These would usually be set up as secrets or environment variables. Here now so a release
+        // build can be built. Also the keystore has not been added to .gitignore
+        create("config") {
+            keyAlias = "pexelsapp"
+            keyPassword = "password"
+            storeFile = file("$rootDir/keystore.jks")
+            storePassword = "password"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("config")
         }
 
         debug {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("config")
         }
 
         defaultConfig {
