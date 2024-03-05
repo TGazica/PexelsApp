@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import org.tgazica.pexelsapp.ui.imagelist.model.ImageListUiState
 import org.tgazica.pexelsapp.ui.model.ImageUiState
@@ -35,7 +36,7 @@ fun ImageList(
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalStaggeredGrid(
-        modifier = modifier,
+        modifier = modifier.testTag("image_list"),
         columns = StaggeredGridCells.Adaptive(150.dp),
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
